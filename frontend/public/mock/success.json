@@ -1,0 +1,11 @@
+{
+    "success": true,
+    "message": "Action simulated successfully in Vercel Demo Mode.",
+    "token": "vercel-demo-token",
+    "user": {
+        "id": 1,
+        "name": "System Admin",
+        "email": "admin@unity.com",
+        "role": "admin"
+    }
+}
