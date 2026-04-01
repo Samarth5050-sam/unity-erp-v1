@@ -2,50 +2,33 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Windows 2000 / Classic Windows System Theme ─────────────── */
+
+@import url('https://fonts.googleapis.com/css2?family=Tahoma:wght@400;700&display=swap');
+
 @layer base {
     :root {
-        --background: 220 33% 98%;
-        --foreground: 222 47% 11%;
-        --card: 0 0% 100%;
-        --card-foreground: 222 47% 11%;
-        --popover: 0 0% 100%;
-        --popover-foreground: 222 47% 11%;
-        --primary: 199 89% 48%; /* Tech Cyan */
-        --primary-foreground: 210 40% 98%;
-        --secondary: 215 25% 27%;
-        --secondary-foreground: 210 40% 98%;
-        --muted: 210 40% 96%;
-        --muted-foreground: 215 16% 47%;
-        --accent: 199 89% 95%;
-        --accent-foreground: 199 89% 48%;
-        --destructive: 0 84% 60%;
-        --destructive-foreground: 210 40% 98%;
-        --border: 214 32% 91%;
-        --input: 214 32% 91%;
-        --ring: 199 89% 48%;
-        --radius: 1rem;
-    }
-
-    .dark {
-        --background: 222 47% 6%; /* Deep, crisp Slate dark for perfect contrast */
-        --foreground: 0 0% 100%; /* Pure white text for peak visibility */
-        --card: 222 47% 9%; /* Distinct elevated cards */
-        --card-foreground: 0 0% 100%;
-        --popover: 222 47% 9%;
-        --popover-foreground: 0 0% 100%;
-        --primary: 195 100% 50%; /* Electric visible Cyan */
-        --primary-foreground: 222 47% 6%;
-        --secondary: 217 33% 17%;
-        --secondary-foreground: 0 0% 100%;
-        --muted: 217 33% 17%;
-        --muted-foreground: 215 20% 75%; /* High-contrast mute */
-        --accent: 270 90% 65%; /* Soft vivid purple accent */
+        /* Win2000 System Colors */
+        --background: 0 0% 78%;        /* #C0C0C0 classic silver */
+        --foreground: 0 0% 0%;         /* black text */
+        --card: 0 0% 78%;
+        --card-foreground: 0 0% 0%;
+        --popover: 0 0% 78%;
+        --popover-foreground: 0 0% 0%;
+        --primary: 240 100% 25%;       /* #000080 classic navy blue */
+        --primary-foreground: 0 0% 100%;
+        --secondary: 0 0% 68%;
+        --secondary-foreground: 0 0% 0%;
+        --muted: 0 0% 75%;
+        --muted-foreground: 0 0% 30%;
+        --accent: 240 100% 25%;
         --accent-foreground: 0 0% 100%;
-        --destructive: 0 84% 60%;
+        --destructive: 0 84% 50%;
         --destructive-foreground: 0 0% 100%;
-        --border: 217 33% 20%;
-        --input: 217 33% 20%;
-        --ring: 195 100% 50%;
+        --border: 0 0% 50%;
+        --input: 0 0% 100%;
+        --ring: 240 100% 25%;
+        --radius: 0px;
     }
 }
 
@@ -55,167 +38,334 @@
     }
 
     body {
-        @apply bg-background text-foreground antialiased;
-        font-family: 'Space Grotesk', 'Inter', sans-serif;
-        background-color: hsla(222, 47%, 6%, 1); /* Unified deep dark slate */
-        background-image:
-            /* Ultra-clean sweeping radial glow instead of messy grid */
-            radial-gradient(circle at 50% 0%, rgba(14, 165, 233, 0.15), transparent 40%),
-            radial-gradient(circle at 100% 100%, rgba(139, 92, 246, 0.1), transparent 50%);
+        font-family: 'Tahoma', 'MS Sans Serif', 'Arial', sans-serif;
+        font-size: 11px;
+        background-color: #008080; /* Classic Teal/Green Windows desktop */
+        background-image: none;
         min-height: 100vh;
-    }
-
-    /* Override Light mode background */
-    :root:not(.dark) body {
-        background-color: hsla(220, 33%, 98%, 1);
-        background-image:
-            radial-gradient(circle at 50% 0%, rgba(14, 165, 233, 0.1), transparent 50%);
+        color: #000000;
     }
 }
 
-/* Advanced Glassmorphism */
-.glass {
-    @apply bg-white/60 backdrop-blur-2xl border border-white/40 shadow-[0_8px_32px_0_rgba(14,165,233,0.1)];
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+/* ── Win2000 Raised (3D) Border ──────────────────────────────── */
+.win-raised {
+    border: 2px solid;
+    border-color: #ffffff #808080 #808080 #ffffff;
+    box-shadow:
+        inset 1px 1px 0 #dfdfdf,
+        inset -1px -1px 0 #404040;
+    background-color: #d4d0c8;
 }
 
-.dark .glass {
-    @apply bg-slate-900/50 backdrop-blur-2xl border-cyan-500/20;
-    box-shadow: 0 8px 32px 0 rgba(14, 165, 233, 0.05), inset 0 0 32px rgba(14,165,233,0.02);
+/* ── Win2000 Sunken (3D) Border ─────────────────────────────── */
+.win-sunken {
+    border: 2px solid;
+    border-color: #808080 #ffffff #ffffff #808080;
+    box-shadow:
+        inset 1px 1px 0 #404040,
+        inset -1px -1px 0 #dfdfdf;
+    background-color: #ffffff;
 }
 
-/* Electronic Glow & Neon Text */
-.gradient-text {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-500 font-extrabold;
+/* ── Win2000 Window Panel ────────────────────────────────────── */
+.win-panel {
+    background-color: #d4d0c8;
+    border: 2px solid;
+    border-color: #ffffff #808080 #808080 #ffffff;
+    box-shadow:
+        1px 1px 0 #000000,
+        inset 1px 1px 0 #dfdfdf;
 }
 
-.neon-glow {
-    box-shadow: 0 0 10px theme('colors.cyan.400'), inset 0 0 10px theme('colors.cyan.400');
-    border-color: theme('colors.cyan.400');
+/* ── Win2000 Title Bar ───────────────────────────────────────── */
+.win-titlebar {
+    background: linear-gradient(to right, #000080, #1084d0);
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 11px;
+    padding: 3px 6px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    user-select: none;
 }
 
-.text-shadow-glow {
-    text-shadow: 0 0 8px rgba(34, 211, 238, 0.8);
+/* ── Win2000 Button ──────────────────────────────────────────── */
+.win-btn {
+    background-color: #d4d0c8;
+    border: 2px solid;
+    border-color: #ffffff #808080 #808080 #ffffff;
+    box-shadow: inset 1px 1px 0 #dfdfdf;
+    padding: 3px 12px;
+    font-family: 'Tahoma', sans-serif;
+    font-size: 11px;
+    cursor: pointer;
+    color: #000000;
+    min-height: 23px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+}
+.win-btn:hover {
+    background-color: #e8e4dc;
+}
+.win-btn:active {
+    border-color: #808080 #ffffff #ffffff #808080;
+    box-shadow: inset 1px 1px 0 #404040;
+    padding: 4px 11px 2px 13px;
 }
 
-.dark .neon-glow-text {
-    text-shadow: 0 0 5px theme('colors.cyan.400'), 0 0 20px theme('colors.cyan.500');
+/* ── Win2000 Primary / Blue Button ──────────────────────────── */
+.win-btn-primary {
+    background-color: #d4d0c8;
+    border: 2px solid;
+    border-color: #ffffff #808080 #808080 #ffffff;
+    box-shadow: inset 1px 1px 0 #dfdfdf, 0 0 0 1px #000080;
+    padding: 3px 12px;
+    font-family: 'Tahoma', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    color: #000080;
+    min-height: 23px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+.win-btn-primary:hover { background-color: #e8e4dc; }
+.win-btn-primary:active {
+    border-color: #808080 #ffffff #ffffff #808080;
+    padding: 4px 11px 2px 13px;
 }
 
-/* Smooth Interactive Elements */
-.interactive {
-    @apply transition-all duration-500 ease-out hover:scale-[1.02] active:scale-[0.98];
+/* ── Win2000 Input ───────────────────────────────────────────── */
+.win-input {
+    background-color: #ffffff;
+    border: 2px solid;
+    border-color: #808080 #ffffff #ffffff #808080;
+    box-shadow: inset 1px 1px 0 #404040;
+    padding: 2px 4px;
+    font-family: 'Tahoma', sans-serif;
+    font-size: 11px;
+    color: #000000;
+    outline: none;
 }
-.interactive:hover {
-    box-shadow: 0 10px 40px -10px rgba(14, 165, 233, 0.5);
-    border-color: rgba(14, 165, 233, 0.5);
-}
-
-/* Premium Card & Widgets */
-.premium-card {
-    @apply glass rounded-2xl p-6 interactive relative overflow-hidden;
-}
-
-/* A scanline effect for cards on hover simulating electronic screens */
-.premium-card::after {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(14, 165, 233, 0.1) 50%, rgba(255,255,255,0) 100%);
-    transform: rotate(30deg) translateY(-100%);
-    transition: transform 0.6s ease-out;
-    pointer-events: none;
-}
-.premium-card:hover::after {
-    transform: rotate(30deg) translateY(100%);
+.win-input:focus {
+    outline: 1px dotted #000000;
+    outline-offset: -3px;
 }
 
-/* Typography Overhaul */
-h1, h2, h3, h4, .title-font {
-    font-family: 'Space Grotesk', sans-serif;
-    @apply tracking-tighter font-black leading-tight;
+/* ── Win2000 Table ───────────────────────────────────────────── */
+.win-table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 11px;
+    background-color: #ffffff;
+}
+.win-table thead tr {
+    background-color: #d4d0c8;
+    border-bottom: 2px solid #808080;
+}
+.win-table th {
+    background-color: #d4d0c8;
+    border: 1px solid;
+    border-color: #ffffff #808080 #808080 #ffffff;
+    padding: 3px 8px;
+    text-align: left;
+    font-weight: 700;
+    font-size: 11px;
+    cursor: default;
+    white-space: nowrap;
+}
+.win-table td {
+    border-bottom: 1px solid #e0e0e0;
+    padding: 3px 8px;
+    font-size: 11px;
+    color: #000000;
+}
+.win-table tbody tr:hover {
+    background-color: #000080;
+    color: #ffffff;
+}
+.win-table tbody tr:hover td {
+    color: #ffffff;
 }
 
-/* Custom Scrollbar */
+/* ── Taskbar ────────────────────────────────────────────────── */
+.win-taskbar {
+    background: linear-gradient(to bottom, #1c5ea4, #1a5199);
+    border-top: 2px solid #3a7fd4;
+    height: 30px;
+}
+
+/* ── Status Bar ─────────────────────────────────────────────── */
+.win-statusbar {
+    background-color: #d4d0c8;
+    border-top: 2px solid;
+    border-color: #808080 #ffffff #ffffff #808080;
+    padding: 2px 6px;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.win-statusbar-pane {
+    border: 1px solid;
+    border-color: #808080 #ffffff #ffffff #808080;
+    padding: 1px 6px;
+    font-size: 11px;
+}
+
+/* ── Menu Bar ───────────────────────────────────────────────── */
+.win-menubar {
+    background-color: #d4d0c8;
+    border-bottom: 1px solid #808080;
+    padding: 2px 4px;
+    display: flex;
+    gap: 2px;
+}
+.win-menubar-item {
+    padding: 2px 6px;
+    font-size: 11px;
+    cursor: pointer;
+}
+.win-menubar-item:hover {
+    background-color: #000080;
+    color: #ffffff;
+}
+
+/* ── Scrollbar ──────────────────────────────────────────────── */
 ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 16px;
+    height: 16px;
+    background-color: #d4d0c8;
 }
 ::-webkit-scrollbar-track {
-    @apply bg-transparent;
+    background-color: #c8c8c8;
+    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAABZJREFUeNpiYGBg+M9AABBgAAIMAAAQAAHlBgCPAAAAAElFTkSuQmCC");
 }
 ::-webkit-scrollbar-thumb {
-    @apply bg-cyan-500/40 rounded-full hover:bg-cyan-400;
+    background-color: #d4d0c8;
+    border: 2px solid;
+    border-color: #ffffff #808080 #808080 #ffffff;
+    box-shadow: inset 1px 1px 0 #dfdfdf;
+}
+::-webkit-scrollbar-button {
+    background-color: #d4d0c8;
+    border: 2px solid;
+    border-color: #ffffff #808080 #808080 #ffffff;
+    height: 16px;
+    width: 16px;
 }
 
-/* Animations */
-@keyframes slideUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px) scale(0.98);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
+/* ── Sidebar Nav Link ───────────────────────────────────────── */
+.win-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 8px;
+    font-size: 11px;
+    color: #000080;
+    cursor: pointer;
+    text-decoration: none;
+    white-space: nowrap;
 }
-.animate-slide-up {
-    animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-@keyframes pulse-glow {
-    0%, 100% { box-shadow: 0 0 10px rgba(14, 165, 233, 0.2); }
-    50% { box-shadow: 0 0 25px rgba(14, 165, 233, 0.6); }
-}
-.pulse-glow {
-    animation: pulse-glow 2s infinite;
+.win-nav-link:hover,
+.win-nav-link.active {
+    background-color: #000080;
+    color: #ffffff;
 }
 
-/* ── Custom Scrollbar Class ───────────────────────────────── */
-.custom-scrollbar {
-    scrollbar-width: thin;
-    scrollbar-color: rgba(14, 165, 233, 0.5) transparent;
+/* ── Group Label ────────────────────────────────────────────── */
+.win-group-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: #404040;
+    padding: 4px 8px 2px 8px;
+    border-bottom: 1px solid #808080;
+    margin-top: 4px;
+    background-color: #c8c4bc;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
 }
 
-/* ── Fix Invisible Select Options in Dark Mode ────────────── */
-select {
-    background-color: #0f172a !important;
-    color: #f8fafc !important;
-    border-color: rgba(14, 165, 233, 0.3) !important;
-}
-
-select option {
-    background-color: #0f172a !important;
-    color: #f8fafc !important;
-}
-
-select option:checked, select option:hover {
-    background-color: #0ea5e9 !important;
-    color: #ffffff !important;
-}
-
-:root:not(.dark) select {
-    background-color: #ffffff !important;
-    color: #0f172a !important;
-    border-color: #e2e8f0 !important;
-}
-:root:not(.dark) select option {
-    background-color: #ffffff !important;
-    color: #0f172a !important;
-}
-
-/* ── Fix Image Preview in Light Areas ────────────────────── */
-.img-preview-bg {
-    background: repeating-conic-gradient(#e2e8f0 0% 25%, transparent 0% 50%) 0 0 / 16px 16px;
-}
-
-.line-clamp-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
-    -webkit-box-orient: vertical;
+/* ── Progress Bar ───────────────────────────────────────────── */
+.win-progress-track {
+    background-color: #ffffff;
+    border: 2px solid;
+    border-color: #808080 #ffffff #ffffff #808080;
+    height: 14px;
+    position: relative;
     overflow: hidden;
+}
+.win-progress-fill {
+    height: 100%;
+    background: repeating-linear-gradient(
+        90deg,
+        #000080 0px,
+        #000080 10px,
+        #1084d0 10px,
+        #1084d0 14px
+    );
+}
+
+/* ── Tooltip ────────────────────────────────────────────────── */
+.win-tooltip {
+    background-color: #ffffe1;
+    border: 1px solid #000000;
+    padding: 2px 4px;
+    font-size: 11px;
+    color: #000000;
+    box-shadow: 1px 1px 0 #808080;
+}
+
+/* ── Alert / Warning Box ────────────────────────────────────── */
+.win-alert {
+    background-color: #ffffc0;
+    border: 2px solid;
+    border-color: #ffffff #808080 #808080 #ffffff;
+    padding: 4px 8px;
+    font-size: 11px;
+}
+
+/* ── Section Header / Divider ───────────────────────────────── */
+.win-section-header {
+    border-bottom: 2px solid;
+    border-color: #808080 transparent transparent transparent;
+    margin-bottom: 8px;
+    padding-bottom: 2px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #000000;
+}
+
+/* ── Classic Windows Icon Badge ─────────────────────────────── */
+.win-badge {
+    background-color: #ff0000;
+    color: #ffffff;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 1px 4px;
+    min-width: 14px;
+    text-align: center;
+    display: inline-block;
+}
+
+/* ── Desktop Area ───────────────────────────────────────────── */
+#root {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* ── Override: Remove all modern effects ─────────────────────── */
+.glass, .neon-glow, .gradient-text, .pulse-glow, .premium-card, .animate-slide-up, .interactive {
+    background: none !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    border: none !important;
+    animation: none !important;
+    text-shadow: none !important;
+    transform: none !important;
 }

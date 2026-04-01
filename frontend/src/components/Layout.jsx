@@ -6,12 +6,35 @@ import Chatbot from './Chatbot';
 
 const Layout = () => {
     return (
-        <div className="flex bg-background min-h-screen font-sans text-foreground selection:bg-primary/20">
+        <div
+            style={{
+                display: 'flex',
+                minHeight: '100vh',
+                fontFamily: 'Tahoma, MS Sans Serif, Arial, sans-serif',
+                backgroundColor: '#008080',
+            }}
+        >
             <Sidebar />
-            <div className="flex-1 ml-72 flex flex-col h-screen relative">
+            <div
+                style={{
+                    flex: 1,
+                    marginLeft: '208px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    height: '100vh',
+                    position: 'relative',
+                }}
+            >
                 <Header />
-                <main className="flex-1 p-8 overflow-y-auto">
-                    <div className="max-w-[1600px] mx-auto animate-slide-up">
+                <main
+                    style={{
+                        flex: 1,
+                        padding: '8px',
+                        overflowY: 'auto',
+                        backgroundColor: '#008080',
+                    }}
+                >
+                    <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
                         <Outlet />
                     </div>
                 </main>

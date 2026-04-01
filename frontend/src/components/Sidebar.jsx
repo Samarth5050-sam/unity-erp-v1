@@ -4,49 +4,49 @@ import {
     LayoutDashboard, ShoppingCart, Package, Users, FileText, Settings,
     LogOut, Shield, Truck, MapPin, TrendingUp, Calculator, UserCog,
     Brain, ChevronDown, ChevronRight, Wrench, Wind, Sparkles,
-    MessageCircle, Star, BarChart3
+    MessageCircle, Star, BarChart3, FolderOpen, Folder
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const NAV_GROUPS = [
     {
-        label: '⚡ Core Operations',
+        label: 'Core Operations',
         items: [
-            { path: '/',           label: 'Dashboard',   icon: LayoutDashboard, color: 'text-blue-400'    },
-            { path: '/billing',    label: 'POS / Billing', icon: ShoppingCart,  color: 'text-emerald-400' },
-            { path: '/products',   label: 'Inventory',   icon: Package,         color: 'text-violet-400'  },
-            { path: '/customers',  label: 'Customers',   icon: Users,           color: 'text-pink-400'    },
-            { path: '/suppliers',  label: 'Suppliers',   icon: Truck,           color: 'text-cyan-400'    },
+            { path: '/',           label: 'Dashboard',       icon: LayoutDashboard },
+            { path: '/billing',    label: 'POS / Billing',   icon: ShoppingCart    },
+            { path: '/products',   label: 'Inventory',       icon: Package         },
+            { path: '/customers',  label: 'Customers',       icon: Users           },
+            { path: '/suppliers',  label: 'Suppliers',       icon: Truck           },
         ],
     },
     {
-        label: '🔧 Service & Warranty',
+        label: 'Service & Warranty',
         items: [
-            { path: '/warranty',   label: 'Warranty',    icon: Shield,          color: 'text-rose-400'    },
-            { path: '/amc',        label: 'AMC Contracts', icon: Wind,          color: 'text-sky-400'     },
+            { path: '/warranty',   label: 'Warranty',        icon: Shield          },
+            { path: '/amc',        label: 'AMC Contracts',   icon: Wind            },
         ],
     },
     {
-        label: '🧠 Intelligence',
+        label: 'Intelligence',
         items: [
-            { path: '/ai-insights', label: 'AI Insights',   icon: Brain,         color: 'text-violet-400' },
-            { path: '/accounting',  label: 'Accounting',     icon: Calculator,    color: 'text-cyan-400'   },
-            { path: '/reports',     label: 'Analytics',      icon: BarChart3,     color: 'text-pink-400'   },
+            { path: '/ai-insights', label: 'AI Insights',   icon: Brain           },
+            { path: '/accounting',  label: 'Accounting',     icon: Calculator      },
+            { path: '/reports',     label: 'Analytics',      icon: BarChart3       },
         ],
     },
     {
-        label: '🎉 Marketing',
+        label: 'Marketing',
         items: [
-            { path: '/festivals',  label: 'Festival Planner', icon: Sparkles,    color: 'text-yellow-400' },
-            { path: '/whatsapp',   label: 'WhatsApp Hub',     icon: MessageCircle, color: 'text-emerald-400' },
+            { path: '/festivals',  label: 'Festival Planner', icon: Sparkles       },
+            { path: '/whatsapp',   label: 'WhatsApp Hub',     icon: MessageCircle  },
         ],
     },
     {
-        label: '⚙ System',
+        label: 'System',
         items: [
-            { path: '/users',    label: 'User & Security', icon: UserCog,  color: 'text-yellow-400' },
-            { path: '/admin',    label: 'Admin Settings',  icon: Settings, color: 'text-slate-400'  },
-            { path: '/contact',  label: 'Store Location',  icon: MapPin,   color: 'text-rose-400'   },
+            { path: '/users',    label: 'User & Security',  icon: UserCog         },
+            { path: '/admin',    label: 'Admin Settings',   icon: Settings        },
+            { path: '/contact',  label: 'Store Location',   icon: MapPin          },
         ],
     },
 ];
@@ -57,72 +57,94 @@ const Sidebar = () => {
     const [collapsed, setCollapsed] = useState({});
 
     const toggleGroup = (label) => setCollapsed(p => ({ ...p, [label]: !p[label] }));
-
     const handleLogout = () => { logout(); navigate('/login'); };
 
     return (
-        <aside className="fixed left-0 top-0 h-screen w-72 bg-black/80 backdrop-blur-2xl border-r border-cyan-500/20 flex flex-col z-40 overflow-hidden shadow-[4px_0_24px_rgba(14,165,233,0.1)]">
-
-            {/* Logo */}
-            <div className="px-6 py-6 border-b border-cyan-500/10 flex-shrink-0 relative">
-                <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/5 to-transparent pointer-events-none"></div>
-                <div className="flex items-center gap-3 relative z-10">
-                    <div className="h-10 w-10 rounded-2xl bg-primary flex items-center justify-center neon-glow flex-shrink-0">
-                        <span className="text-black font-black text-sm">UE</span>
-                    </div>
-                    <div>
-                        <h1 className="font-black text-sm text-white leading-tight tracking-tight title-font gradient-text">Unity Electronics</h1>
-                        <div className="flex items-center gap-1.5 mt-0.5">
-                            <span className="h-1.5 w-1.5 rounded-full bg-cyan-400 pulse-glow flex-shrink-0"></span>
-                            <p className="text-[9px] font-black uppercase tracking-widest text-cyan-500/70">ERP System • Live</p>
-                        </div>
-                    </div>
-                </div>
+        <aside
+            className="fixed left-0 top-0 h-screen w-52 flex flex-col z-40 overflow-hidden"
+            style={{
+                backgroundColor: '#d4d0c8',
+                borderRight: '2px solid',
+                borderRightColor: '#808080',
+                fontFamily: 'Tahoma, MS Sans Serif, Arial, sans-serif',
+            }}
+        >
+            {/* Title bar / logo */}
+            <div className="win-titlebar flex-shrink-0" style={{ fontSize: '11px', padding: '4px 6px' }}>
+                <div
+                    style={{
+                        width: 14, height: 14, backgroundColor: '#ffffff',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        fontSize: '9px', fontWeight: 900, color: '#000080',
+                        border: '1px solid #000080', flexShrink: 0
+                    }}
+                >U</div>
+                <span style={{ fontWeight: 700, fontSize: '11px' }}>Unity ERP</span>
             </div>
 
-            {/* Navigation */}
-            <nav className="flex-1 overflow-y-auto py-4 px-3 custom-scrollbar space-y-1">
+            {/* Navigation tree */}
+            <nav className="flex-1 overflow-y-auto" style={{ padding: '4px 0' }}>
                 {NAV_GROUPS.map(group => (
-                    <div key={group.label} className="mb-1">
-                        {/* Group Header */}
+                    <div key={group.label}>
+                        {/* Group header */}
                         <button
                             onClick={() => toggleGroup(group.label)}
-                            className="w-full flex items-center justify-between px-3 py-1.5 mb-1 text-[9px] font-black uppercase tracking-[0.2em] text-cyan-500/50 hover:text-cyan-400 transition-colors"
+                            className="w-full text-left win-group-label flex items-center gap-1"
+                            style={{ cursor: 'pointer', border: 'none', background: 'none', padding: '3px 8px' }}
                         >
-                            <span>{group.label}</span>
                             {collapsed[group.label]
-                                ? <ChevronRight size={10} />
-                                : <ChevronDown size={10} />
+                                ? <Folder size={11} style={{ color: '#404040', flexShrink: 0 }} />
+                                : <FolderOpen size={11} style={{ color: '#404040', flexShrink: 0 }} />
                             }
+                            <span style={{ fontSize: '10px', fontWeight: 700, color: '#404040', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                                {group.label}
+                            </span>
+                            <span style={{ marginLeft: 'auto' }}>
+                                {collapsed[group.label]
+                                    ? <ChevronRight size={9} style={{ color: '#404040' }} />
+                                    : <ChevronDown size={9} style={{ color: '#404040' }} />
+                                }
+                            </span>
                         </button>
 
-                        {/* Items */}
+                        {/* Nav items */}
                         {!collapsed[group.label] && (
-                            <div className="space-y-0.5">
+                            <div>
                                 {group.items.map(item => (
                                     <NavLink
                                         key={item.path}
                                         to={item.path}
                                         end={item.path === '/'}
-                                        className={({ isActive }) =>
-                                            `flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-300 group relative ${
-                                                isActive
-                                                    ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-400/30 shadow-[0_0_15px_rgba(14,165,233,0.15)]'
-                                                    : 'text-slate-400 hover:bg-cyan-500/5 hover:text-cyan-300'
-                                            }`
-                                        }
+                                        style={({ isActive }) => ({
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '6px',
+                                            padding: '3px 8px 3px 20px',
+                                            fontSize: '11px',
+                                            color: isActive ? '#ffffff' : '#000000',
+                                            backgroundColor: isActive ? '#000080' : 'transparent',
+                                            textDecoration: 'none',
+                                            cursor: 'pointer',
+                                            whiteSpace: 'nowrap',
+                                            overflow: 'hidden',
+                                        })}
+                                        onMouseEnter={e => {
+                                            if (!e.currentTarget.classList.contains('active-link')) {
+                                                e.currentTarget.style.backgroundColor = '#000080';
+                                                e.currentTarget.style.color = '#ffffff';
+                                            }
+                                        }}
+                                        onMouseLeave={e => {
+                                            // restore if not active
+                                            const isActive = e.currentTarget.getAttribute('aria-current') === 'page';
+                                            if (!isActive) {
+                                                e.currentTarget.style.backgroundColor = 'transparent';
+                                                e.currentTarget.style.color = '#000000';
+                                            }
+                                        }}
                                     >
-                                        {({ isActive }) => (
-                                            <>
-                                                {isActive && (
-                                                    <span className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-6 bg-cyan-400 rounded-r-full neon-glow"></span>
-                                                )}
-                                                <div className={`h-7 w-7 rounded-lg flex items-center justify-center flex-shrink-0 transition-all ${isActive ? 'bg-cyan-500/20' : 'bg-white/5 group-hover:bg-cyan-500/10'}`}>
-                                                    <item.icon size={14} className={isActive ? 'text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.8)]' : item.color} />
-                                                </div>
-                                                <span className={`text-xs font-black tracking-wide ${isActive ? 'text-cyan-400 text-shadow-glow' : ''}`}>{item.label}</span>
-                                            </>
-                                        )}
+                                        <item.icon size={12} style={{ flexShrink: 0 }} />
+                                        <span style={{ fontSize: '11px' }}>{item.label}</span>
                                     </NavLink>
                                 ))}
                             </div>
@@ -131,22 +153,38 @@ const Sidebar = () => {
                 ))}
             </nav>
 
-            {/* Footer: Owner info + Logout */}
-            <div className="p-4 border-t border-cyan-500/10 flex-shrink-0">
-                <div className="flex items-center gap-3 mb-3">
-                    <div className="h-9 w-9 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center flex-shrink-0 neon-glow">
-                        <span className="text-sm font-black text-cyan-400">SR</span>
-                    </div>
-                    <div className="min-w-0">
-                        <p className="text-xs font-black text-white truncate drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">Samarth R. Shinde</p>
-                        <p className="text-[9px] text-cyan-500/70 font-black uppercase tracking-widest">Proprietor</p>
+            {/* Footer */}
+            <div style={{
+                borderTop: '2px solid',
+                borderTopColor: '#808080',
+                padding: '6px 8px',
+                backgroundColor: '#d4d0c8',
+                flexShrink: 0
+            }}>
+                {/* User info */}
+                <div style={{
+                    display: 'flex', alignItems: 'center', gap: '6px',
+                    padding: '3px 4px',
+                    border: '2px solid', borderColor: '#808080 #ffffff #ffffff #808080',
+                    marginBottom: '4px', backgroundColor: '#ffffff',
+                }}>
+                    <div style={{
+                        width: 20, height: 20, backgroundColor: '#000080',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        fontSize: '9px', fontWeight: 900, color: '#ffffff', flexShrink: 0
+                    }}>SR</div>
+                    <div>
+                        <div style={{ fontSize: '10px', fontWeight: 700, color: '#000000' }}>Samarth R. Shinde</div>
+                        <div style={{ fontSize: '9px', color: '#000080' }}>Proprietor</div>
                     </div>
                 </div>
+
                 <button
                     onClick={handleLogout}
-                    className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl bg-white/5 hover:bg-rose-500/10 text-slate-500 hover:text-rose-400 transition-all font-black text-xs group"
+                    className="win-btn w-full"
+                    style={{ justifyContent: 'center', width: '100%' }}
                 >
-                    <LogOut size={14} className="group-hover:rotate-12 transition-transform" />
+                    <LogOut size={11} />
                     Sign Out
                 </button>
             </div>
