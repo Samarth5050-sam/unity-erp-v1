@@ -7,10 +7,11 @@ export default {
     darkMode: 'class', // Enable class-based dark mode
     theme: {
         extend: {
-            fontFamily: {
-                sans: ['Inter', 'sans-serif'],
-                heading: ['Outfit', 'sans-serif'],
-            },
+        fontFamily: {
+            sans: ['Tahoma', 'MS Sans Serif', 'Arial', 'sans-serif'],
+            heading: ['Tahoma', 'MS Sans Serif', 'Arial', 'sans-serif'],
+            mono: ['Courier New', 'monospace'],
+        },
             colors: {
                 border: "hsl(var(--border))",
                 input: "hsl(var(--input))",

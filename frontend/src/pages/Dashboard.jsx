@@ -3,52 +3,161 @@ import api from '../api/axios';
 import {
     DollarSign, ShoppingBag, AlertTriangle, TrendingUp,
     ArrowUpRight, ArrowDownRight, Package, Shield, Truck,
-    Plus, ShoppingCart, Brain, Calculator, UserCog, BarChart3
+    Plus, ShoppingCart, Brain, Calculator, UserCog, BarChart3,
+    Monitor, HardDrive, Cpu, Activity
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area, PieChart, Pie, Cell, Legend } from 'recharts';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card';
-import Button from '../components/ui/Button';
+import {
+    BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+    AreaChart, Area, PieChart, Pie, Cell, Legend
+} from 'recharts';
 
-const StatCard = ({ title, value, icon: Icon, color, trend, trendValue }) => (
-    <div className="premium-card group shadow-sm hover:neon-glow transition-all duration-500 overflow-hidden relative">
-        <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-        <div className="flex items-start justify-between relative z-10">
-            <div>
-                <p className="text-[11px] font-black uppercase tracking-widest text-cyan-500/70 mb-1">{title}</p>
-                <h3 className="text-3xl font-black tracking-tight text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]">{value}</h3>
-                {(trend || trendValue) && (
-                    <div className="mt-3 flex items-center text-xs font-bold">
-                        {trend === 'up' ? (
-                            <span className="text-cyan-400 flex items-center bg-cyan-900/40 px-2 py-0.5 rounded-full border border-cyan-500/30 shadow-[0_0_10px_rgba(34,211,238,0.2)]">
-                                <ArrowUpRight size={14} className="mr-1" /> {trendValue}
-                            </span>
-                        ) : (
-                            <span className="text-rose-400 flex items-center bg-rose-900/40 px-2 py-0.5 rounded-full border border-rose-500/30 shadow-[0_0_10px_rgba(244,63,94,0.2)]">
-                                <ArrowDownRight size={14} className="mr-1" /> {trendValue}
-                            </span>
-                        )}
-                        <span className="text-cyan-500/50 ml-2 font-medium tracking-wide">vs last month</span>
-                    </div>
-                )}
+/* ── Windows 2000 style stat card (a "window panel") ── */
+const StatCard = ({ title, value, icon: Icon, trend, trendValue, accentColor = '#000080' }) => (
+    <div
+        style={{
+            backgroundColor: '#d4d0c8',
+            border: '2px solid',
+            borderColor: '#ffffff #808080 #808080 #ffffff',
+            boxShadow: '1px 1px 0 #000000, inset 1px 1px 0 #dfdfdf',
+        }}
+    >
+        {/* Title bar */}
+        <div
+            style={{
+                background: 'linear-gradient(to right, #000080, #1084d0)',
+                color: '#ffffff',
+                padding: '2px 6px',
+                fontSize: '11px',
+                fontWeight: 700,
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+            }}
+        >
+            <Icon size={11} />
+            {title}
+        </div>
+        {/* Content */}
+        <div style={{ padding: '6px 8px' }}>
+            <div style={{ fontSize: '22px', fontWeight: 700, color: accentColor, fontFamily: 'Tahoma', lineHeight: 1 }}>
+                {value}
             </div>
-            <div className={`p-4 rounded-2xl ${color} bg-opacity-10 lg:group-hover:bg-opacity-20 transition-all duration-500 shadow-[inset_0_0_20px_rgba(0,0,0,0.2)] border border-white/5 group-hover:border-white/20`}>
-                <Icon size={24} className={`${color.replace('bg-', 'text-')} group-hover:drop-shadow-[0_0_10px_currentColor] transition-all duration-500`} />
-            </div>
+            {(trend || trendValue) && (
+                <div style={{ marginTop: '4px', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '10px' }}>
+                    {trend === 'up' ? (
+                        <span style={{ color: '#008000', display: 'flex', alignItems: 'center', gap: '2px' }}>
+                            <ArrowUpRight size={11} /> {trendValue}
+                        </span>
+                    ) : (
+                        <span style={{ color: '#cc0000', display: 'flex', alignItems: 'center', gap: '2px' }}>
+                            <ArrowDownRight size={11} /> {trendValue}
+                        </span>
+                    )}
+                </div>
+            )}
         </div>
     </div>
 );
 
+/* ── Windows 2000 style module quick-access button ── */
+const QuickButton = ({ label, icon: Icon, desc, onClick }) => (
+    <button
+        onClick={onClick}
+        style={{
+            backgroundColor: '#d4d0c8',
+            border: '2px solid',
+            borderColor: '#ffffff #808080 #808080 #ffffff',
+            boxShadow: 'inset 1px 1px 0 #dfdfdf',
+            padding: '6px 8px',
+            cursor: 'pointer',
+            textAlign: 'left',
+            fontFamily: 'Tahoma, sans-serif',
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '2px',
+        }}
+        onMouseEnter={e => { e.currentTarget.style.backgroundColor = '#e8e4dc'; }}
+        onMouseLeave={e => { e.currentTarget.style.backgroundColor = '#d4d0c8'; }}
+        onMouseDown={e => {
+            e.currentTarget.style.borderColor = '#808080 #ffffff #ffffff #808080';
+            e.currentTarget.style.boxShadow = 'inset 1px 1px 0 #404040';
+        }}
+        onMouseUp={e => {
+            e.currentTarget.style.borderColor = '#ffffff #808080 #808080 #ffffff';
+            e.currentTarget.style.boxShadow = 'inset 1px 1px 0 #dfdfdf';
+        }}
+    >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <div style={{
+                width: 20, height: 20, backgroundColor: '#000080',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0
+            }}>
+                <Icon size={12} style={{ color: '#ffffff' }} />
+            </div>
+            <span style={{ fontSize: '11px', fontWeight: 700, color: '#000000' }}>{label}</span>
+        </div>
+        <span style={{ fontSize: '9px', color: '#404040', paddingLeft: '26px' }}>{desc}</span>
+    </button>
+);
+
+/* ── Win2000 Window Wrapper ── */
+const WinWindow = ({ title, children, icon: Icon, style = {} }) => (
+    <div
+        style={{
+            backgroundColor: '#d4d0c8',
+            border: '2px solid',
+            borderColor: '#ffffff #808080 #808080 #ffffff',
+            boxShadow: '1px 1px 0 #000000, inset 1px 1px 0 #dfdfdf',
+            ...style,
+        }}
+    >
+        {/* Title bar */}
+        <div
+            style={{
+                background: 'linear-gradient(to right, #000080, #1084d0)',
+                color: '#ffffff',
+                padding: '3px 6px',
+                fontSize: '11px',
+                fontWeight: 700,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+            }}
+        >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                {Icon && <Icon size={11} />}
+                {title}
+            </div>
+            {/* Classic window control buttons */}
+            <div style={{ display: 'flex', gap: '2px' }}>
+                {['_', '□', '✕'].map((ctrl, i) => (
+                    <div key={i} style={{
+                        width: 14, height: 13, backgroundColor: '#d4d0c8',
+                        border: '1px solid', borderColor: '#ffffff #404040 #404040 #ffffff',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        fontSize: '9px', fontWeight: 900, color: '#000000', cursor: 'pointer',
+                        lineHeight: 1,
+                    }}>{ctrl}</div>
+                ))}
+            </div>
+        </div>
+        {/* Content */}
+        <div style={{ padding: '8px' }}>
+            {children}
+        </div>
+    </div>
+);
+
+const CHART_COLORS = ['#000080', '#008080', '#800080', '#808000', '#008000'];
+
 const Dashboard = () => {
     const navigate = useNavigate();
     const [stats, setStats] = useState({
-        totalSales: 0,
-        totalOrders: 0,
-        lowStock: 0,
-        totalProducts: 0,
-        activeWarranties: 0,
-        totalSuppliers: 0,
-        recentSales: []
+        totalSales: 0, totalOrders: 0, lowStock: 0,
+        totalProducts: 0, activeWarranties: 0, totalSuppliers: 0,
+        recentSales: [], totalProfit: 0, criticalStock: []
     });
     const [salesData, setSalesData] = useState([]);
     const [categoryData, setCategoryData] = useState([]);
@@ -67,7 +176,6 @@ const Dashboard = () => {
                 const sales = salesRes.data;
                 const products = productsRes.data;
 
-                // Profit Calculation
                 let totalProfit = 0;
                 sales.forEach(sale => {
                     sale.SaleItems?.forEach(item => {
@@ -92,18 +200,11 @@ const Dashboard = () => {
                     const date = new Date(sale.createdAt).toLocaleDateString('en-US', { day: 'numeric', month: 'short' });
                     chartMap[date] = (chartMap[date] || 0) + Number(sale.total_amount);
                 });
-
-                const chartData = Object.keys(chartMap).map(date => ({
-                    date,
-                    amount: chartMap[date]
-                })).slice(-7);
+                const chartData = Object.keys(chartMap).map(date => ({ date, amount: chartMap[date] })).slice(-7);
 
                 setStats({
-                    totalSales,
-                    totalProfit,
-                    totalOrders: sales.length,
-                    lowStock: lowStockProducts.length,
-                    criticalStock,
+                    totalSales, totalProfit, totalOrders: sales.length,
+                    lowStock: lowStockProducts.length, criticalStock,
                     totalProducts: products.length,
                     activeWarranties: warrantyRes.data.filter(w => w.status === 'ACTIVE').length,
                     totalSuppliers: supplierRes.data.length,
@@ -112,220 +213,305 @@ const Dashboard = () => {
                 setSalesData(chartData);
                 setCategoryData(categoryData);
                 setLoading(false);
-
             } catch (error) {
                 console.error("Error loading dashboard", error);
                 setLoading(false);
             }
         };
-
         fetchData();
     }, []);
 
     if (loading) return (
-        <div className="flex h-[60vh] items-center justify-center">
-            <div className="relative h-24 w-24">
-                <div className="absolute inset-0 rounded-full border-4 border-primary/20"></div>
-                <div className="absolute inset-0 rounded-full border-4 border-primary border-t-transparent animate-spin"></div>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh' }}>
+            <div style={{
+                backgroundColor: '#d4d0c8',
+                border: '2px solid', borderColor: '#ffffff #808080 #808080 #ffffff',
+                boxShadow: '1px 1px 0 #000000',
+                padding: '20px 32px', textAlign: 'center'
+            }}>
+                <div className="win-titlebar" style={{ marginBottom: '12px' }}>
+                    <Monitor size={11} /> Loading Unity ERP...
+                </div>
+                <div style={{ fontSize: '11px', marginBottom: '10px', color: '#000000' }}>
+                    Please wait while the system loads your data...
+                </div>
+                <div className="win-progress-track" style={{ width: '200px', margin: '0 auto' }}>
+                    <div className="win-progress-fill" style={{ width: '60%' }} />
+                </div>
             </div>
         </div>
     );
 
     return (
-        <div className="space-y-10 pb-10">
-            {/* Hero Section */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', paddingBottom: '8px', fontFamily: 'Tahoma, sans-serif' }}>
+
+            {/* ── Top Bar: Welcome + New Sale ── */}
+            <div style={{
+                backgroundColor: '#d4d0c8',
+                border: '2px solid', borderColor: '#ffffff #808080 #808080 #ffffff',
+                boxShadow: '1px 1px 0 #000000, inset 1px 1px 0 #dfdfdf',
+                padding: '6px 10px',
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            }}>
                 <div>
-                    <h1 className="text-4xl tracking-tighter font-black">
-                        Welcome back, <span className="gradient-text">Samarth</span>
-                    </h1>
-                    <p className="text-slate-500 font-bold mt-2 flex items-center uppercase tracking-widest text-[11px]">
-                        <span className="w-2 h-2 rounded-full bg-emerald-500 mr-2 animate-pulse"></span>
-                        System Online • {new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}
-                    </p>
-                </div>
-                <div className="flex gap-3 relative z-10">
-                    <Button onClick={() => navigate('/billing')} className="rounded-2xl px-8 h-12 bg-cyan-500 hover:bg-cyan-400 text-slate-950 neon-glow flex gap-2 font-black tracking-widest uppercase text-sm cursor-pointer border border-transparent hover:scale-105 transition-all duration-300">
-                        <Plus size={20} className="text-slate-950 drop-shadow-md" /> New POS Sale
-                    </Button>
-                </div>
-            </div>
-
-            {/* Quick Access Modules */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {[
-                    { label: 'AI Intelligence', icon: Brain, path: '/ai-insights', color: 'text-violet-400', bg: 'bg-violet-500/10', border: 'border-violet-500/20', desc: 'Forecasts & Insights' },
-                    { label: 'Accounting', icon: Calculator, path: '/accounting', color: 'text-cyan-400', bg: 'bg-cyan-500/10', border: 'border-cyan-500/20', desc: 'P&L · GST · Expenses' },
-                    { label: 'User & Security', icon: UserCog, path: '/users', color: 'text-yellow-400', bg: 'bg-yellow-500/10', border: 'border-yellow-500/20', desc: 'Roles · Audit Logs' },
-                    { label: 'Deep Analytics', icon: BarChart3, path: '/reports', color: 'text-pink-400', bg: 'bg-pink-500/10', border: 'border-pink-500/20', desc: 'Charts · Trends · KPIs' },
-                ].map(item => (
-                    <button key={item.path} onClick={() => navigate(item.path)}
-                        className={`premium-card text-left hover:scale-[1.02] hover:neon-glow hover:-translate-y-1 transition-all duration-500 cursor-pointer p-5 border ${item.border} group relative overflow-hidden`}
-                    >
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-white/10 to-transparent blur-3xl rounded-full transform translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                        <div className="relative z-10">
-                            <div className={`h-11 w-11 rounded-2xl ${item.bg} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform shadow-[inset_0_0_10px_rgba(255,255,255,0.05)] border border-white/5`}>
-                                <item.icon size={22} className={`${item.color} group-hover:drop-shadow-[0_0_8px_currentColor]`} />
-                            </div>
-                            <p className="font-black text-sm text-cyan-50 group-hover:text-cyan-300 transition-colors title-font">{item.label}</p>
-                            <p className="text-[10px] font-bold text-cyan-500/60 mt-1 uppercase tracking-wider">{item.desc}</p>
-                        </div>
-                    </button>
-                ))}
-            </div>
-
-            {/* Stats Overview */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <StatCard
-                    title="Total Revenue"
-                    value={`₹${stats.totalSales.toLocaleString()}`}
-                    icon={DollarSign}
-                    color="bg-emerald-500"
-                    trend="up"
-                    trendValue="+12.5%"
-                />
-                <StatCard
-                    title="Net Profit"
-                    value={`₹${stats.totalProfit.toLocaleString()}`}
-                    icon={TrendingUp}
-                    color="bg-primary"
-                    trend="up"
-                    trendValue="Direct Margin"
-                />
-                <StatCard
-                    title="Low Stock"
-                    value={`${stats.lowStock} Items`}
-                    icon={AlertTriangle}
-                    color="bg-rose-500"
-                    trend="down"
-                    trendValue="Needs Attention"
-                />
-                <StatCard
-                    title="Inventory"
-                    value={stats.totalProducts}
-                    icon={Package}
-                    color="bg-indigo-500"
-                    trend="up"
-                    trendValue="Healthy"
-                />
-            </div>
-
-            <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-                {/* Main Sales Chart */}
-                <div className="xl:col-span-2 premium-card shadow-sm">
-                    <div className="flex items-center justify-between mb-8">
-                        <div>
-                            <h2 className="text-xl font-black tracking-tight">Revenue Analytics</h2>
-                            <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Growth Forecast Over Time</p>
-                        </div>
+                    <div style={{ fontSize: '13px', fontWeight: 700, color: '#000000' }}>
+                        Welcome back, <span style={{ color: '#000080' }}>Samarth</span> — Unity Electronics ERP
                     </div>
-                    <div className="h-[380px] w-full">
+                    <div style={{ fontSize: '10px', color: '#404040', marginTop: '2px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <span style={{ display: 'inline-block', width: 6, height: 6, backgroundColor: '#008000', border: '1px solid #004000' }} />
+                        System Online
+                        <span style={{ color: '#808080' }}>|</span>
+                        {new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
+                    </div>
+                </div>
+                <div style={{ display: 'flex', gap: '6px' }}>
+                    <button
+                        className="win-btn-primary"
+                        onClick={() => navigate('/billing')}
+                        style={{ height: '25px', fontSize: '11px' }}
+                    >
+                        <Plus size={12} />
+                        New POS Sale
+                    </button>
+                    <button
+                        className="win-btn"
+                        onClick={() => navigate('/products')}
+                        style={{ height: '25px', fontSize: '11px' }}
+                    >
+                        <Package size={12} />
+                        Inventory
+                    </button>
+                </div>
+            </div>
+
+            {/* ── Quick Access Modules ── */}
+            <WinWindow title="Quick Access" icon={Monitor}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '6px' }}>
+                    {[
+                        { label: 'AI Intelligence', icon: Brain, path: '/ai-insights', desc: 'Forecasts & Insights' },
+                        { label: 'Accounting', icon: Calculator, path: '/accounting', desc: 'P&L · GST · Expenses' },
+                        { label: 'User & Security', icon: UserCog, path: '/users', desc: 'Roles · Audit Logs' },
+                        { label: 'Deep Analytics', icon: BarChart3, path: '/reports', desc: 'Charts · Trends · KPIs' },
+                    ].map(item => (
+                        <QuickButton
+                            key={item.path}
+                            label={item.label}
+                            icon={item.icon}
+                            desc={item.desc}
+                            onClick={() => navigate(item.path)}
+                        />
+                    ))}
+                </div>
+            </WinWindow>
+
+            {/* ── Stat Cards ── */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '6px' }}>
+                <StatCard title="Total Revenue" value={`₹${stats.totalSales.toLocaleString()}`} icon={DollarSign} trend="up" trendValue="+12.5% vs last month" accentColor="#000080" />
+                <StatCard title="Net Profit" value={`₹${stats.totalProfit?.toLocaleString()}`} icon={TrendingUp} trend="up" trendValue="Direct Margin" accentColor="#008000" />
+                <StatCard title="Low Stock" value={`${stats.lowStock} Items`} icon={AlertTriangle} trend="down" trendValue="Needs Attention" accentColor="#cc0000" />
+                <StatCard title="Inventory" value={stats.totalProducts} icon={Package} trend="up" trendValue="Healthy" accentColor="#000080" />
+            </div>
+
+            {/* ── Charts Row ── */}
+            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '8px' }}>
+
+                {/* Revenue Chart */}
+                <WinWindow title="Revenue Analytics - Growth Forecast" icon={Activity}>
+                    <div style={{ height: '280px', width: '100%' }}>
                         <ResponsiveContainer width="100%" height="100%">
-                            <AreaChart data={salesData}>
+                            <AreaChart data={salesData} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
                                 <defs>
-                                    <linearGradient id="colorPremium" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#0ea5e9" stopOpacity={0.8} />
-                                        <stop offset="95%" stopColor="#0ea5e9" stopOpacity={0} />
-                                    </linearGradient>
-                                    <filter id="neonShadow" x="-50%" y="-50%" width="200%" height="200%">
-                                        <feDropShadow dx="0" dy="0" stdDeviation="5" floodColor="#0ea5e9" floodOpacity="0.8"/>
-                                    </filter>
+                                    <pattern id="win2kPattern" x="0" y="0" width="4" height="4" patternUnits="userSpaceOnUse">
+                                        <rect width="4" height="4" fill="#c8e4f8" />
+                                        <rect x="0" y="0" width="1" height="1" fill="#a0c8e8" />
+                                    </pattern>
                                 </defs>
-                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#1e293b" opacity={0.6} />
-                                <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fill: '#38bdf8', fontSize: 11, fontWeight: 800, fontFamily: 'Space Grotesk' }} dy={15} />
-                                <YAxis axisLine={false} tickLine={false} tick={{ fill: '#38bdf8', fontSize: 11, fontWeight: 800, fontFamily: 'Space Grotesk' }} />
-                                <Tooltip contentStyle={{ borderRadius: '16px', border: '1px solid rgba(34,211,238,0.2)', background: 'rgba(15,23,42,0.9)', boxShadow: '0 0 20px rgba(14,165,233,0.3)', fontWeight: 800, color: '#f8fafc' }} itemStyle={{ color: '#0ea5e9' }} />
-                                <Area type="monotone" dataKey="amount" stroke="#0ea5e9" strokeWidth={4} fillOpacity={1} fill="url(#colorPremium)" style={{ filter: 'url(#neonShadow)' }} />
+                                <CartesianGrid strokeDasharray="2 2" stroke="#c0c0c0" vertical={false} />
+                                <XAxis
+                                    dataKey="date"
+                                    axisLine={{ stroke: '#808080' }}
+                                    tickLine={{ stroke: '#808080' }}
+                                    tick={{ fill: '#000000', fontSize: 10, fontFamily: 'Tahoma' }}
+                                    dy={4}
+                                />
+                                <YAxis
+                                    axisLine={{ stroke: '#808080' }}
+                                    tickLine={{ stroke: '#808080' }}
+                                    tick={{ fill: '#000000', fontSize: 10, fontFamily: 'Tahoma' }}
+                                />
+                                <Tooltip
+                                    contentStyle={{
+                                        backgroundColor: '#ffffe1',
+                                        border: '1px solid #000000',
+                                        borderRadius: 0,
+                                        fontFamily: 'Tahoma',
+                                        fontSize: '11px',
+                                        padding: '4px 8px',
+                                        boxShadow: '1px 1px 0 #808080',
+                                        color: '#000000',
+                                    }}
+                                    itemStyle={{ color: '#000080' }}
+                                    labelStyle={{ fontWeight: 700, color: '#000000' }}
+                                />
+                                <Area
+                                    type="monotone"
+                                    dataKey="amount"
+                                    stroke="#000080"
+                                    strokeWidth={2}
+                                    fill="url(#win2kPattern)"
+                                />
                             </AreaChart>
                         </ResponsiveContainer>
                     </div>
-                </div>
+                </WinWindow>
 
-                {/* Right Column: Inventory & Status */}
-                <div className="space-y-8">
-                    <div className="premium-card shadow-sm border-emerald-500/20">
-                        <h2 className="text-xl font-black tracking-tight mb-6">Inventory Pulse</h2>
-                        <div className="h-[250px] w-full">
+                {/* Right column */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    {/* Inventory Pie */}
+                    <WinWindow title="Inventory Pulse" icon={HardDrive}>
+                        <div style={{ height: '160px', width: '100%' }}>
                             <ResponsiveContainer width="100%" height="100%">
                                 <PieChart>
-                                    <Pie data={categoryData} cx="50%" cy="50%" innerRadius={70} outerRadius={95} paddingAngle={8} dataKey="value" stroke="none">
+                                    <Pie
+                                        data={categoryData}
+                                        cx="50%" cy="50%"
+                                        innerRadius={40} outerRadius={65}
+                                        paddingAngle={2}
+                                        dataKey="value"
+                                        stroke="#808080"
+                                        strokeWidth={1}
+                                    >
                                         {categoryData.map((entry, index) => (
-                                            <Cell key={`cell-${index}`} fill={['#3b82f6', '#10b981', '#f59e0b', '#6366f1', '#ec4899'][index % 5]} />
+                                            <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
                                         ))}
                                     </Pie>
-                                    <Tooltip />
+                                    <Tooltip
+                                        contentStyle={{
+                                            backgroundColor: '#ffffe1',
+                                            border: '1px solid #000000',
+                                            borderRadius: 0,
+                                            fontFamily: 'Tahoma',
+                                            fontSize: '11px',
+                                            boxShadow: '1px 1px 0 #808080',
+                                        }}
+                                    />
+                                    <Legend
+                                        iconType="square"
+                                        iconSize={8}
+                                        wrapperStyle={{ fontSize: '10px', fontFamily: 'Tahoma', color: '#000000' }}
+                                    />
                                 </PieChart>
                             </ResponsiveContainer>
                         </div>
-                    </div>
+                    </WinWindow>
 
-                    <div className="premium-card shadow-sm border-rose-500/20 bg-rose-500/5">
-                        <div className="flex items-center gap-3 mb-6">
-                            <AlertTriangle className="text-rose-500" size={24} />
-                            <h2 className="text-xl font-black tracking-tight">Critical Stock</h2>
-                        </div>
-                        <div className="space-y-4">
+                    {/* Critical Stock */}
+                    <WinWindow title="Critical Stock Alert" icon={AlertTriangle}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                             {(stats.criticalStock || []).slice(0, 3).map((item, idx) => (
-                                <div key={idx} className="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5">
-                                    <div className="min-w-0">
-                                        <p className="text-sm font-bold text-white truncate">{item.product_name}</p>
-                                        <p className="text-[10px] uppercase font-black text-rose-400">{item.stock_quantity} left</p>
+                                <div
+                                    key={idx}
+                                    style={{
+                                        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                                        padding: '3px 6px',
+                                        border: '1px solid', borderColor: '#808080 #ffffff #ffffff #808080',
+                                        backgroundColor: '#ffffff',
+                                    }}
+                                >
+                                    <div>
+                                        <div style={{ fontSize: '11px', fontWeight: 700, color: '#000000' }}>{item.product_name}</div>
+                                        <div style={{ fontSize: '10px', color: '#cc0000', fontWeight: 700 }}>{item.stock_quantity} left</div>
                                     </div>
-                                    <Button variant="ghost" size="sm" onClick={() => navigate('/products')} className="text-primary hover:bg-primary/10">Order</Button>
+                                    <button
+                                        className="win-btn"
+                                        onClick={() => navigate('/products')}
+                                        style={{ height: '20px', padding: '0 8px', fontSize: '10px' }}
+                                    >
+                                        Order
+                                    </button>
                                 </div>
                             ))}
-                            {stats.criticalStock?.length === 0 && <p className="text-xs font-bold text-slate-500">All stock levels healthy.</p>}
+                            {stats.criticalStock?.length === 0 && (
+                                <div style={{ fontSize: '11px', color: '#008000', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                    <span style={{ color: '#008000' }}>✓</span> All stock levels healthy.
+                                </div>
+                            )}
                         </div>
-                    </div>
-                </div>
-
-                {/* Recent Activity Table */}
-                <div className="xl:col-span-3 premium-card shadow-sm overflow-hidden p-0">
-                    <div className="p-8 pb-4 flex items-center justify-between">
-                        <div>
-                            <h2 className="text-xl font-black tracking-tight">Recent Transactions</h2>
-                            <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Live Order Stream</p>
-                        </div>
-                    </div>
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-left">
-                            <thead className="bg-slate-50/50 dark:bg-white/5 border-y border-white/5">
-                                <tr>
-                                    <th className="px-8 py-4 text-[11px] font-black uppercase tracking-[0.2em] text-slate-400">Invoice</th>
-                                    <th className="px-8 py-4 text-[11px] font-black uppercase tracking-[0.2em] text-slate-400">Customer</th>
-                                    <th className="px-8 py-4 text-[11px] font-black uppercase tracking-[0.2em] text-slate-400">Amount</th>
-                                    <th className="px-8 py-4 text-[11px] font-black uppercase tracking-[0.2em] text-slate-400">Date</th>
-                                    <th className="px-8 py-4 text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 text-right">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-white/5">
-                                {(stats.recentSales || []).map((sale) => (
-                                    <tr key={sale.id} className="hover:bg-primary/5 transition-colors group">
-                                        <td className="px-8 py-5">
-                                            <span className="font-black text-sm text-primary group-hover:underline cursor-pointer">#{sale.invoice_number}</span>
-                                        </td>
-                                        <td className="px-8 py-5">
-                                            <div className="flex items-center gap-3">
-                                                <div className="h-8 w-8 rounded-full bg-slate-100 dark:bg-white/10 flex items-center justify-center text-[10px] font-black">
-                                                    {(sale.Customer?.name || 'C').charAt(0)}
-                                                </div>
-                                                <span className="font-bold text-sm tracking-tight">{sale.Customer?.name || 'Guest Customer'}</span>
-                                            </div>
-                                        </td>
-                                        <td className="px-8 py-5 font-black text-sm">₹{Number(sale.total_amount).toLocaleString()}</td>
-                                        <td className="px-8 py-5 text-sm text-slate-500 font-bold">{new Date(sale.createdAt).toLocaleDateString()}</td>
-                                        <td className="px-8 py-5 text-right">
-                                            <span className="inline-flex items-center rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-black text-emerald-500 ring-1 ring-inset ring-emerald-500/20">
-                                                VERIFIED
-                                            </span>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
+                    </WinWindow>
                 </div>
             </div>
+
+            {/* ── Recent Transactions ── */}
+            <WinWindow title="Recent Transactions — Live Order Stream" icon={ShoppingCart}>
+                <div style={{
+                    border: '2px solid', borderColor: '#808080 #ffffff #ffffff #808080',
+                    backgroundColor: '#ffffff', overflow: 'hidden'
+                }}>
+                    <table className="win-table" style={{ tableLayout: 'fixed', width: '100%' }}>
+                        <colgroup>
+                            <col style={{ width: '120px' }} />
+                            <col style={{ width: '180px' }} />
+                            <col style={{ width: '120px' }} />
+                            <col style={{ width: '120px' }} />
+                            <col style={{ width: '100px' }} />
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>Invoice #</th>
+                                <th>Customer</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {(stats.recentSales || []).map((sale) => (
+                                <tr key={sale.id}>
+                                    <td style={{ fontWeight: 700, color: '#000080', cursor: 'pointer' }}>
+                                        #{sale.invoice_number}
+                                    </td>
+                                    <td>{sale.Customer?.name || 'Guest Customer'}</td>
+                                    <td style={{ fontWeight: 700 }}>₹{Number(sale.total_amount).toLocaleString()}</td>
+                                    <td style={{ color: '#404040' }}>{new Date(sale.createdAt).toLocaleDateString()}</td>
+                                    <td>
+                                        <span style={{
+                                            display: 'inline-block',
+                                            backgroundColor: '#008000',
+                                            color: '#ffffff',
+                                            padding: '1px 6px',
+                                            fontSize: '10px',
+                                            fontWeight: 700,
+                                        }}>
+                                            VERIFIED
+                                        </span>
+                                    </td>
+                                </tr>
+                            ))}
+                            {stats.recentSales?.length === 0 && (
+                                <tr>
+                                    <td colSpan={5} style={{ textAlign: 'center', color: '#808080', padding: '12px' }}>
+                                        No recent transactions found.
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+
+                {/* Status bar */}
+                <div className="win-statusbar" style={{ marginTop: '4px' }}>
+                    <div className="win-statusbar-pane">
+                        {stats.recentSales?.length || 0} object(s)
+                    </div>
+                    <div className="win-statusbar-pane">
+                        Total Revenue: ₹{stats.totalSales.toLocaleString()}
+                    </div>
+                    <div className="win-statusbar-pane" style={{ marginLeft: 'auto' }}>
+                        {new Date().toLocaleDateString()}
+                    </div>
+                </div>
+            </WinWindow>
+
         </div>
     );
 };
