@@ -1,0 +1,100 @@
+from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
+
+db = SQLAlchemy()
+
+class User(db.Model):
+    __tablename__ = 'Users'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(100), unique=True, nullable=False)
+    password_hash = db.Column(db.String(200), nullable=False)
+    role = db.Column(db.String(20), default='staff') # 'admin' or 'staff'
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+class Supplier(db.Model):
+    __tablename__ = 'Suppliers'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    contact_person = db.Column(db.String(100))
+    phone = db.Column(db.String(20))
+    email = db.Column(db.String(100))
+    address = db.Column(db.Text)
+    gstin = db.Column(db.String(20))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    products = db.relationship('Product', backref='supplier', lazy=True)
+
+class Product(db.Model):
+    __tablename__ = 'Products'
+    id = db.Column(db.Integer, primary_key=True)
+    product_name = db.Column(db.String(200), nullable=False)
+    category = db.Column(db.String(100), nullable=False)
+    stock_quantity = db.Column(db.Integer, default=0)
+    has_serial_number = db.Column(db.Boolean, default=False)
+    warranty_months = db.Column(db.Integer, default=12)
+    barcode = db.Column(db.String(100), unique=True)
+    image_url = db.Column(db.String(500))
+    purchase_price = db.Column(db.Numeric(10, 2), nullable=False)
+    selling_price = db.Column(db.Numeric(10, 2), nullable=False)
+    gst_percentage = db.Column(db.Numeric(5, 2), default=18.00)
+    supplier_id = db.Column(db.Integer, db.ForeignKey('Suppliers.id'))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    sale_items = db.relationship('SaleItem', backref='product', lazy=True)
+    serial_numbers = db.relationship('SerialNumber', backref='product', lazy=True)
+
+class Customer(db.Model):
+    __tablename__ = 'Customers'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    phone = db.Column(db.String(20), unique=True, nullable=False)
+    email = db.Column(db.String(100))
+    address = db.Column(db.Text)
+    loyalty_points = db.Column(db.Integer, default=0)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    sales = db.relationship('Sale', backref='customer', lazy=True)
+
+class Sale(db.Model):
+    __tablename__ = 'Sales'
+    id = db.Column(db.Integer, primary_key=True)
+    invoice_number = db.Column(db.String(50), unique=True, nullable=False)
+    customer_id = db.Column(db.Integer, db.ForeignKey('Customers.id'))
+    total_amount = db.Column(db.Numeric(10, 2), nullable=False)
+    gst_amount = db.Column(db.Numeric(10, 2), default=0)
+    discount = db.Column(db.Numeric(10, 2), default=0)
+    payment_method = db.Column(db.String(20), default='cash') # 'cash', 'card', 'upi'
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    items = db.relationship('SaleItem', backref='sale', lazy=True, cascade="all, delete-orphan")
+
+class SaleItem(db.Model):
+    __tablename__ = 'SaleItems'
+    id = db.Column(db.Integer, primary_key=True)
+    sale_id = db.Column(db.Integer, db.ForeignKey('Sales.id'), nullable=False)
+    product_id = db.Column(db.Integer, db.ForeignKey('Products.id'), nullable=False)
+    quantity = db.Column(db.Integer, nullable=False)
+    price = db.Column(db.Numeric(10, 2), nullable=False)
+    serial_number = db.Column(db.String(100))
+
+class SerialNumber(db.Model):
+    __tablename__ = 'SerialNumbers'
+    id = db.Column(db.Integer, primary_key=True)
+    product_id = db.Column(db.Integer, db.ForeignKey('Products.id'), nullable=False)
+    serial_number = db.Column(db.String(100), unique=True, nullable=False)
+    status = db.Column(db.String(20), default='available') # 'available', 'sold'
+
+class Warranty(db.Model):
+    __tablename__ = 'Warranties'
+    id = db.Column(db.Integer, primary_key=True)
+    customer_id = db.Column(db.Integer, db.ForeignKey('Customers.id'))
+    sale_item_id = db.Column(db.Integer, db.ForeignKey('SaleItems.id'))
+    serial_number_id = db.Column(db.Integer, db.ForeignKey('SerialNumbers.id'))
+    start_date = db.Column(db.DateTime, default=datetime.utcnow)
+    expiry_date = db.Column(db.DateTime)
+    status = db.Column(db.String(20), default='active')

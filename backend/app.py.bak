@@ -1,0 +1,136 @@
+import os
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
+from flask_bcrypt import Bcrypt
+from dotenv import load_dotenv
+from datetime import timedelta
+from models import db, User, Product, Customer, Sale, SaleItem, Supplier
+
+# Load environment variables
+load_dotenv()
+
+app = Flask(__name__)
+# Configurations
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///database.sqlite')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET', 'your-secret-key')
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(days=1)
+
+# Initialize extensions
+CORS(app)
+db.init_app(app)
+bcrypt = Bcrypt(app)
+jwt = JWTManager(app)
+
+# Create tables if they don't exist
+with app.app_context():
+    db.create_all()
+
+# --- Auth Routes ---
+
+@app.route('/api/auth/register', methods=['POST'])
+def register():
+    data = request.get_json()
+    if User.query.filter_by(email=data.get('email')).first():
+        return jsonify({"message": "User already exists"}), 400
+    
+    hashed_password = bcrypt.generate_password_hash(data.get('password')).decode('utf-8')
+    new_user = User(
+        name=data.get('name'),
+        email=data.get('email'),
+        password_hash=hashed_password,
+        role=data.get('role', 'staff')
+    )
+    db.session.add(new_user)
+    db.session.commit()
+    return jsonify({"message": "User registered successfully", "userId": new_user.id}), 201
+
+@app.route('/api/auth/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    user = User.query.filter_by(email=data.get('email')).first()
+    
+    if user and bcrypt.check_password_hash(user.password_hash, data.get('password')):
+        access_token = create_access_token(identity={"id": user.id, "role": user.role})
+        return jsonify({
+            "token": access_token,
+            "user": {
+                "id": user.id,
+                "name": user.name,
+                "email": user.email,
+                "role": user.role
+            }
+        }), 200
+    
+    return jsonify({"message": "Invalid credentials"}), 401
+
+# --- Product Routes ---
+
+@app.route('/api/products', methods=['GET'])
+def get_products():
+    products = Product.query.all()
+    output = []
+    for p in products:
+        output.append({
+            "id": p.id,
+            "product_name": p.product_name,
+            "category": p.category,
+            "stock_quantity": p.stock_quantity,
+            "selling_price": float(p.selling_price),
+            "image_url": p.image_url
+        })
+    return jsonify(output)
+
+@app.route('/api/products', methods=['POST'])
+def add_product():
+    data = request.get_json()
+    new_product = Product(
+        product_name=data.get('product_name'),
+        category=data.get('category'),
+        purchase_price=data.get('purchase_price'),
+        selling_price=data.get('selling_price'),
+        stock_quantity=data.get('stock_quantity', 0),
+        has_serial_number=data.get('has_serial_number', False)
+    )
+    db.session.add(new_product)
+    db.session.commit()
+    return jsonify({"message": "Product added", "id": new_product.id}), 201
+
+# --- Customer Routes ---
+
+@app.route('/api/customers', methods=['GET'])
+def get_customers():
+    customers = Customer.query.all()
+    output = []
+    for c in customers:
+        output.append({
+            "id": c.id,
+            "name": c.name,
+            "phone": c.phone,
+            "email": c.email
+        })
+    return jsonify(output)
+
+# --- Dashboard Stats ---
+
+@app.route('/api/sales/stats', methods=['GET'])
+def get_stats():
+    # Simple stats for dashboard
+    total_sales = Sale.query.count()
+    total_products = Product.query.count()
+    total_customers = Customer.query.count()
+    
+    return jsonify({
+        "totalSales": total_sales,
+        "totalProducts": total_products,
+        "totalCustomers": total_customers,
+        "recentRevenue": 0 # Logic for revenue can be added here
+    })
+
+@app.route('/')
+def index():
+    return jsonify({"message": "Unity Electronics Python API Running"})
+
+if __name__ == '__main__':
+    app.run(debug=True, port=5000)
