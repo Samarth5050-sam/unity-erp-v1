@@ -8,6 +8,8 @@ const SaleItem = require('./SaleItem');
 const Purchase = require('./Purchase');
 const SerialNumber = require('./SerialNumber');
 const Warranty = require('./Warranty');
+const Order = require('./Order');
+const OrderItem = require('./OrderItem');
 
 // Associations
 
@@ -41,6 +43,14 @@ Warranty.belongsTo(SaleItem, { foreignKey: 'sale_item_id' });
 Warranty.belongsTo(SerialNumber, { foreignKey: 'serial_number_id' });
 Customer.hasMany(Warranty, { foreignKey: 'customer_id' });
 
+// Order - OrderItem
+Order.hasMany(OrderItem, { foreignKey: 'order_id', onDelete: 'CASCADE' });
+OrderItem.belongsTo(Order, { foreignKey: 'order_id' });
+
+// Order - User
+Order.belongsTo(User, { foreignKey: 'user_id' });
+User.hasMany(Order, { foreignKey: 'user_id' });
+
 module.exports = {
     sequelize,
     User,
@@ -51,6 +61,8 @@ module.exports = {
     SaleItem,
     Purchase,
     SerialNumber,
-    Warranty
+    Warranty,
+    Order,
+    OrderItem
 };
 

@@ -2,8 +2,8 @@ const sequelize = require('./config/db');
 const { Customer } = require('./models');
 
 const customerNames = [
-    "Sagar", "Yashraj", "Amit", "Aditya", "Jagajeevan",
-    "Pranav", "Tanmay", "Samarth", "Prathmesh", "Vedant"
+    "samarth", "raj", "amit", "sagar", "aditya",
+    "prathmesh", "sarthak", "jagjeevan", "pranav", "yashraj"
 ];
 
 const seed = async () => {

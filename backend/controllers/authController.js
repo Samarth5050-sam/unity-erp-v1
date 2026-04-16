@@ -19,7 +19,7 @@ const register = async (req, res) => {
             name,
             email,
             password_hash,
-            role: role || 'staff'
+            role: role || 'user'
         });
 
         res.status(201).json({ message: 'User registered successfully', userId: newUser.id });
@@ -47,6 +47,24 @@ const login = async (req, res) => {
                     name: 'Admin User',
                     email: 'admin@unity.com',
                     role: 'admin'
+                }
+            });
+        }
+
+        if (email === 'user@unity.com' && password === 'user123') {
+            const token = jwt.sign(
+                { id: 2, role: 'user' },
+                process.env.JWT_SECRET || 'fallback_secret',
+                { expiresIn: '1d' }
+            );
+
+            return res.json({
+                token,
+                user: {
+                    id: 2,
+                    name: 'Customer Demo',
+                    email: 'user@unity.com',
+                    role: 'user'
                 }
             });
         }

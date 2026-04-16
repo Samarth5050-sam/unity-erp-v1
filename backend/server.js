@@ -3,6 +3,8 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const path = require('path');
 const os = require('os');
+const http = require('http');
+const { Server } = require('socket.io');
 const { sequelize } = require('./models');
 
 dotenv.config();
@@ -29,6 +31,16 @@ function getLocalIp() {
 }
 
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server, {
+    cors: {
+        origin: '*',
+        methods: ['GET', 'POST', 'PUT', 'DELETE']
+    }
+});
+
+app.set('io', io); // make it accessible in routes
+
 const PORT = process.env.PORT || 5000;
 
 // Middleware
@@ -43,6 +55,7 @@ app.use('/api/sales', require('./routes/salesRoutes'));
 app.use('/api/customers', require('./routes/customerRoutes'));
 app.use('/api/suppliers', require('./routes/supplierRoutes'));
 app.use('/api/warranties', require('./routes/warrantyRoutes'));
+app.use('/api/orders', require('./routes/orderRoutes'));
 
 // WhatsApp Mock API
 app.post('/api/whatsapp/send', (req, res) => {
@@ -68,7 +81,14 @@ const startServer = async () => {
         // Sync models (force: false to avoid data loss in prod, true for dev reset)
         await sequelize.sync({ force: false });
 
-        const server = app.listen(PORT, '0.0.0.0', () => {
+        io.on('connection', (socket) => {
+            console.log('A client connected:', socket.id);
+            socket.on('disconnect', () => {
+                console.log('Client disconnected:', socket.id);
+            });
+        });
+
+        server.listen(PORT, '0.0.0.0', () => {
             console.log(`Server running on port ${PORT}`);
             console.log(`Network access: http://${getLocalIp()}:${PORT}`);
         });
